@@ -1614,10 +1614,7 @@ static IM_STATUS rga_generate_gauss_coe(im_gauss_t *gauss, struct rga_gauss_conf
     /* generate guassian kernel */
     if (gauss->matrix == NULL) {
         kernel = (double *)malloc(gauss->ksize.width * gauss->ksize.height * sizeof(double));
-        if (kernel == NULL) {
-            IM_LOGE("rga gauss kernel alloc error!\n");
-            return IM_STATUS_OUT_OF_MEMORY;
-        }
+
         generate_gaussian_kernel(gauss->sigma_x, gauss->sigma_y, gauss->ksize, kernel);
     } else {
         kernel = gauss->matrix;
@@ -1628,12 +1625,6 @@ static IM_STATUS rga_generate_gauss_coe(im_gauss_t *gauss, struct rga_gauss_conf
 
     config->size = (gauss->ksize.width + gauss->ksize.height) / 2;
     coe = (uint32_t *)malloc(config->size * sizeof(uint32_t));
-    if (coe == NULL) {
-        IM_LOGE("rga gauss coe alloc error!\n");
-        if (gauss->matrix == NULL)
-            free(kernel);
-        return IM_STATUS_OUT_OF_MEMORY;
-    }
     rga_get_gaussian_special_points(gauss->ksize.width, gauss->ksize.height,
                                     kernel, coe, factor, center_factor);
     config->coe_ptr = ptr_to_u64(coe);
@@ -1823,11 +1814,11 @@ IM_STATUS rga_task_submit(im_job_handle_t job_handle, rga_buffer_t src, rga_buff
     if (IS_ERR(session))
         return (IM_STATUS)PTR_ERR(session);
 
-    get_debug_state();
-    if (is_debug_en())
-        rga_dump_info(IM_LOG_DEBUG | IM_LOG_FORCE,
-                      job_handle, &src, &dst, &pat, &srect, &drect, &prect,
-                      acquire_fence_fd, release_fence_fd, opt_ptr, usage);
+    //get_debug_state();
+    //if (is_debug_en())
+    //    rga_dump_info(IM_LOG_DEBUG | IM_LOG_FORCE,
+    //                  job_handle, &src, &dst, &pat, &srect, &drect, &prect,
+    //                  acquire_fence_fd, release_fence_fd, opt_ptr, usage);
 
     memset(&opt, 0x0, sizeof(opt));
     rga_get_opt(&opt, opt_ptr);
