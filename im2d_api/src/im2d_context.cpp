@@ -290,7 +290,11 @@ static void librga_exit() {
 INIT_COMPONENT_EXPORT(librga_init);
 #else
 __attribute__((constructor)) int librga_init_constructor() {
-    return librga_init();
+    int ret = librga_init();
+#if !defined(ANDROID) && !defined(ANDROID_VNDK) && !defined(RT_THREAD)
+    setenv("ROCKCHIP_RGA_API_VERSION", RGA_API_VERSION, 1);
+#endif
+    return ret;
 }
 
 __attribute__((destructor)) void librga_exit_destructor() {

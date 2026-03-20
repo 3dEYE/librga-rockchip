@@ -117,7 +117,8 @@ void rga_version_update(void) {
 #if (defined(ANDROID) || defined(ANDROID_VNDK))
     __system_property_set("vendor.rga_api.version", RGA_API_VERSION);
 #elif (!defined(RT_THREAD))
-    setenv("ROCKCHIP_RGA_API_VERSION", RGA_API_VERSION, 1);
+    /* setenv is NOT thread-safe with concurrent getenv on glibc.
+     * Moved to librga_init_constructor() to avoid heap corruption. */
 #endif
 }
 

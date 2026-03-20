@@ -1832,7 +1832,12 @@ IM_STATUS rga_task_submit(im_job_handle_t job_handle, rga_buffer_t src, rga_buff
         ret = rga_set_buffer_info("dst", dst, &dstinfo);
     } else {
         ret = rga_set_buffer_info("src", src, &srcinfo);
+        if (ret != IM_STATUS_SUCCESS)
+            return (IM_STATUS)ret;
+
         ret = rga_set_buffer_info("dst", dst, &dstinfo);
+        if (ret != IM_STATUS_SUCCESS)
+            return (IM_STATUS)ret;
     }
 
     if (ret <= 0)
