@@ -530,7 +530,7 @@ IM_API const char* querystring(int name) {
         "max 4 pixel/cycle ",
     };
     ostringstream out;
-    static string info;
+    static thread_local string info;
 
     rga_session_t *session;
     rga_info_table_entry *rga_info;
