@@ -76,6 +76,10 @@ int main() {
     fg_buf = (char *)malloc(fg_buf_size);
     bg_buf = (char *)malloc(bg_buf_size);
     output_buf = (char *)malloc(output_buf_size);
+    if (fg_buf == NULL || bg_buf == NULL || output_buf == NULL) {
+        printf("malloc buffer failed!\n");
+        return -1;
+    }
 
     /* fill image data */
     if (0 != read_image_from_file(fg_buf, LOCAL_FILE_PATH, fg_width, fg_height, fg_format, 0)) {

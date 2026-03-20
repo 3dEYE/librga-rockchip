@@ -39,7 +39,10 @@ static void rga_map_insert_head(rga_job_map_t *job_map, rga_map_node_data_t data
     rga_map_node_t *node;
 
     node = (rga_map_node_t *)malloc(sizeof(rga_map_node_t));
-
+    if (node == NULL) {
+        IM_LOGE("rga_map node alloc error!\n");
+        return;
+    }
     node->data = data;
 
     node->prev = NULL;
@@ -58,7 +61,10 @@ static void rga_map_insert_tail(rga_job_map_t *job_map, rga_map_node_data_t data
     rga_map_node_t *node;
 
     node = (rga_map_node_t *)malloc(sizeof(rga_map_node_t));
-
+    if (node == NULL) {
+        IM_LOGE("rga_map node alloc error!\n");
+        return;
+    }
     node->data = data;
 
     node->prev = job_map->tail;

@@ -54,6 +54,10 @@ int main(void) {
     dst_buf_size = dst_width * dst_height * get_bpp_from_format(dst_format);
 
     dst_buf = (char *)malloc(dst_buf_size);
+    if (dst_buf == NULL) {
+        printf("malloc buffer failed!\n");
+        return -1;
+    }
 
     /* fill image data */
     if (0 != read_image_from_file(dst_buf, LOCAL_FILE_PATH, dst_width, dst_height, dst_format, 0)) {

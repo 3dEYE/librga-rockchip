@@ -73,6 +73,10 @@ int main() {
 
     src_buf = (char *)malloc(src_buf_size);
     dst_buf = (char *)malloc(dst_buf_size);
+    if (src_buf == NULL || dst_buf == NULL) {
+        printf("malloc buffer failed!\n");
+        return -1;
+    }
 
     /* fill image data */
     memset(src_buf, 0xff, src_buf_size);

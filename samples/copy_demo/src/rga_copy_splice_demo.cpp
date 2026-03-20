@@ -77,6 +77,10 @@ int main() {
     left_buf = (char *)malloc(left_buf_size);
     right_buf = (char *)malloc(right_buf_size);
     dst_buf = (char *)malloc(dst_buf_size);
+    if (left_buf == NULL || right_buf == NULL || dst_buf == NULL) {
+        printf("malloc buffer failed!\n");
+        return -1;
+    }
 
     /* fill image data */
     if (0 != read_image_from_file(left_buf, LOCAL_FILE_PATH, left_width, left_height, left_format, 0)) {

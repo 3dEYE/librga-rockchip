@@ -75,6 +75,10 @@ int main() {
     src_buf = (char *)malloc(src_buf_size);
     dst_buf = (char *)malloc(dst_buf_size);
     lut_buf = (char *)malloc(lut_buf_size);
+    if (src_buf == NULL || dst_buf == NULL || lut_buf == NULL) {
+        printf("malloc buffer failed!\n");
+        return -1;
+    }
 
     /* fill image data */
     if (0 != read_image_from_file(src_buf, LOCAL_FILE_PATH, src_width, src_height, src_format, 0)) {

@@ -1614,7 +1614,10 @@ static IM_STATUS rga_generate_gauss_coe(im_gauss_t *gauss, struct rga_gauss_conf
     /* generate guassian kernel */
     if (gauss->matrix == NULL) {
         kernel = (double *)malloc(gauss->ksize.width * gauss->ksize.height * sizeof(double));
-
+        if (kernel == NULL) {
+            IM_LOGE("rga gauss kernel alloc error!\n");
+            return IM_STATUS_OUT_OF_MEMORY;
+        }
         generate_gaussian_kernel(gauss->sigma_x, gauss->sigma_y, gauss->ksize, kernel);
     } else {
         kernel = gauss->matrix;
@@ -1625,6 +1628,12 @@ static IM_STATUS rga_generate_gauss_coe(im_gauss_t *gauss, struct rga_gauss_conf
 
     config->size = (gauss->ksize.width + gauss->ksize.height) / 2;
     coe = (uint32_t *)malloc(config->size * sizeof(uint32_t));
+    if (coe == NULL) {
+        IM_LOGE("rga gauss coe alloc error!\n");
+        if (gauss->matrix == NULL)
+            free(kernel);
+        return IM_STATUS_OUT_OF_MEMORY;
+    }
     rga_get_gaussian_special_points(gauss->ksize.width, gauss->ksize.height,
                                     kernel, coe, factor, center_factor);
     config->coe_ptr = ptr_to_u64(coe);
