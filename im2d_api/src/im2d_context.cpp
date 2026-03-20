@@ -37,6 +37,7 @@
 #endif
 
 rga_session_t g_rga_session;
+static rga_session_t* g_rga_session_cached = NULL;
 
 static void set_driver_feature(rga_session_t *session) {
     if (rga_version_compare(session->driver_verison, (struct rga_version_t){ 1, 3, 0, {0} }) >= 0)
@@ -199,14 +200,17 @@ static void rga_session_deinit(rga_session_t *session) {
     rga_device_exit(session);
 }
 
-rga_session_t *get_rga_session() {
-    int ret;
-    rga_session_t *session =  &g_rga_session;
+rga_session_t* get_rga_session() {
+    rga_session_t* cached = __atomic_load_n(&g_rga_session_cached, __ATOMIC_ACQUIRE);
+    if (__builtin_expect(cached != NULL, 1))
+        return cached;
 
-    /* to fast get session, first using rdlock */
+    rga_session_t* session = &g_rga_session;
+
     pthread_rwlock_rdlock(&session->rwlock);
     if (session->rga_dev_fd > 0) {
         pthread_rwlock_unlock(&session->rwlock);
+        __atomic_store_n(&g_rga_session_cached, session, __ATOMIC_RELEASE);
         return session;
     }
     pthread_rwlock_unlock(&session->rwlock);
@@ -214,17 +218,19 @@ rga_session_t *get_rga_session() {
     pthread_rwlock_wrlock(&session->rwlock);
     if (session->rga_dev_fd > 0) {
         pthread_rwlock_unlock(&session->rwlock);
+        __atomic_store_n(&g_rga_session_cached, session, __ATOMIC_RELEASE);
         return session;
     }
 
-    ret = rga_session_init(session);
+    int ret = rga_session_init(session);
     if (ret != IM_STATUS_SUCCESS) {
         pthread_rwlock_unlock(&session->rwlock);
-        return (rga_session_t *)ERR_PTR(IM_STATUS_NO_SESSION);
+        return (rga_session_t*)ERR_PTR(IM_STATUS_NO_SESSION);
     }
 
     rga_version_update();
 
+    __atomic_store_n(&g_rga_session_cached, session, __ATOMIC_RELEASE);
     pthread_rwlock_unlock(&session->rwlock);
 
     IM_LOG(IM_LOG_DIRECT | IM_LOG_FORCE | IM_LOG_INFO, "%s", RGA_API_FULL_VERSION);
