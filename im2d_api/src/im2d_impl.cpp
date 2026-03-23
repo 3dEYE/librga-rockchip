@@ -2301,9 +2301,9 @@ IM_STATUS rga_task_submit(im_job_handle_t job_handle, rga_buffer_t src, rga_buff
     if (ret < 0) {
         IM_LOGE("failed to generate task req!\n");
 
-        rga_dump_info(IM_LOG_ERROR | IM_LOG_FORCE,
-                      job_handle, &src, &dst, &pat, &srect, &drect, &prect,
-                      acquire_fence_fd, release_fence_fd, opt_ptr, usage);
+        //rga_dump_info(IM_LOG_ERROR | IM_LOG_FORCE,
+        //              job_handle, &src, &dst, &pat, &srect, &drect, &prect,
+        //              acquire_fence_fd, release_fence_fd, opt_ptr, usage);
 
         ret = IM_STATUS_FAILED;
         goto release_resource;
@@ -2357,9 +2357,9 @@ IM_STATUS rga_task_submit(im_job_handle_t job_handle, rga_buffer_t src, rga_buff
         if (ret) {
             IM_LOGE("Failed to call RockChipRga interface, please use 'dmesg' command to view driver error log.");
 
-            rga_dump_info(IM_LOG_ERROR | IM_LOG_FORCE,
-                        job_handle, &src, &dst, &pat, &srect, &drect, &prect,
-                        acquire_fence_fd, release_fence_fd, opt_ptr, usage);
+            //rga_dump_info(IM_LOG_ERROR | IM_LOG_FORCE,
+            //            job_handle, &src, &dst, &pat, &srect, &drect, &prect,
+            //            acquire_fence_fd, release_fence_fd, opt_ptr, usage);
 
             ret = IM_STATUS_FAILED;
             goto release_resource;
