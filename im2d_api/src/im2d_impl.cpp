@@ -2457,7 +2457,8 @@ IM_STATUS rga_job_cancel(im_job_handle_t job_handle) {
         free(job);
     }
 
-    g_im2d_job_manager.job_count--;
+    if (g_im2d_job_manager.job_count > 0)
+      g_im2d_job_manager.job_count--;
 
     pthread_mutex_unlock(&g_im2d_job_manager.mutex);
 
